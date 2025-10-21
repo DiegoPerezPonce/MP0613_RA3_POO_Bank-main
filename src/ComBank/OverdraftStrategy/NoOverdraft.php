@@ -2,28 +2,20 @@
 
 use ComBank\OverdraftStrategy\Contracts\OverdraftInterface;
 
-/**
- * Created by VS Code.
- * User: JPortugal
- * Date: 7/28/24
- * Time: 12:27 PM
- */
 
 class NoOverdraft implements OverdraftInterface
 {
  
-
-    public function isGrantOverdraftFund(float $found) : bool{
+    // Ajustado el nombre del método para que coincida con la interfaz y el diagrama
+    public function isGrantOverdraftFunds(float $found) : bool
+    {
+        // En una estrategia "NoOverdraft", nunca se conceden fondos de sobregiro
         return false;
     }
-    public function getOverdraftFundsAmount() : float{
+
+    public function getOverdraftFundsAmount() : float
+    {
+        // En una estrategia "NoOverdraft", la cantidad de fondos es siempre 0
         return 0.0;
     }
-
-    
-
-
-
-
-   
 }
