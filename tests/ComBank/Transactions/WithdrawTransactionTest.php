@@ -9,12 +9,6 @@ use ComBank\Transactions\WithdrawTransaction;
 use ComBank\Exceptions\InvalidOverdraftFundsException;
 use ComBank\Exceptions\ZeroAmountException;
 
-/**
- * Created by VS Code.
- * User: JPortugal
- * Date: 7/28/24
- * Time: 1:47 PM
- */
 
 class WithdrawTransactionTest extends TestCase
 {

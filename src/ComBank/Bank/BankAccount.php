@@ -68,7 +68,7 @@ class BankAccount implements BankAccountInterface
 
     public function isOpen() : bool
     {
-        // Más conciso y preciso al comparar con la constante de string
+        
         return $this->status === BankAccountInterface::STATUS_OPEN; 
     }
     

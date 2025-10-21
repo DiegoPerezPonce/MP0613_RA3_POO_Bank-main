@@ -35,13 +35,13 @@ class DepositTransaction extends BaseTransaction implements BankTransactionInter
 
     public function getTransactionInfo() : string
     {
-        // Podría venir de una propiedad heredada o construirse aquí
+        
         return "Deposit of " . $this->getAmount();
     }
 
     public function getAmount() : float
     {
-        // Podría venir de una propiedad heredada $this->amount
+        
         return $this->amount; 
     }
     
