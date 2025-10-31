@@ -1,7 +1,7 @@
 <?php namespace ComBank\OverdraftStrategy;
 
 use ComBank\OverdraftStrategy\Contracts\OverdraftInterface;
-use ComBank\Exceptions\InvalidArgsException; // Podrías necesitar esta excepción para validación
+use ComBank\Exceptions\InvalidArgsException;
 
 class SilverOverdraft implements OverdraftInterface
 {
@@ -9,19 +9,19 @@ class SilverOverdraft implements OverdraftInterface
 
     public function isGrantOverdraftFunds(float $found) : bool
     {
-        // Si el monto solicitado como sobregiro es mayor que el límite permitido,
-        // no se conceden los fondos. Asumimos que $found es el monto que se intentaría "sobregirar".
-        // También validamos que el monto no sea negativo.
-        if ($found < 0) {
-            // O podrías lanzar una InvalidArgsException aquí si lo consideras apropiado
+        
+        if ($found < -100) {
+            
             return false; 
         }
         return $found <= self::OVERDRAFT_LIMIT;
     }
 
+    //usar getOverdraftFundsAmount() quitar el -100.
+
     public function getOverdraftFundsAmount() : float
     {
-        // Retorna la cantidad máxima de fondos de sobregiro disponibles
+        
         return self::OVERDRAFT_LIMIT;
     }
 }

@@ -34,7 +34,7 @@ class WithdrawTransaction extends BaseTransaction implements BankTransactionInte
 
             if (!$overdraftStrategy->isGrantOverdraftFunds($neededOverdraft)) {
                 
-                throw new FailedTransactionException("Insufficient funds and overdraft not granted for the amount: " . $neededOverdraft);
+                throw new FailedTransactionException("Insufficient funds and overdraft not granted for the amount : -" . $neededOverdraft);
             }
             
         }
