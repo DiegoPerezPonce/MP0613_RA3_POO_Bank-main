@@ -17,7 +17,6 @@ class BankAccount implements BankAccountInterface
     use AmountValidationTrait;
     
     private float $balance;
-    // Cambiamos 'bool' a 'string' para que pueda almacenar BankAccountInterface::STATUS_OPEN o STATUS_CLOSED
     private string $status; 
 
     private OverdraftInterface $overdraft;
@@ -84,17 +83,15 @@ class BankAccount implements BankAccountInterface
 
     public function setBalance(float $balance) : void
     {
-        // Podrías añadir validación aquí si el balance no puede ser negativo, por ejemplo.
-        // O si quieres validar el monto antes de establecerlo.
+       
         try {
             $this->validateAmount(amount: $balance);
             $this->balance = $balance;
         } catch (InvalidArgsException $e) {
-            // Manejar la excepción, por ejemplo, relanzándola o registrándola
+            
             throw new BankAccountException("No se pudo establecer el saldo: " . $e->getMessage());
         } catch (ZeroAmountException $e) {
-            // Si quieres permitir 0 como balance, podrías omitir esta validación o ajustarla
-            // Para este caso, asumimos que 0 es un balance válido.
+           
             $this->balance = $balance;
         }
     }
