@@ -1,27 +1,32 @@
 <?php namespace ComBank\OverdraftStrategy;
 
 use ComBank\OverdraftStrategy\Contracts\OverdraftInterface;
-use ComBank\Exceptions\InvalidArgsException;
 
 class SilverOverdraft implements OverdraftInterface
 {
-    private const OVERDRAFT_LIMIT = 100.0; // Definimos el límite de sobregiro para Silver
+    private const OVERDRAFT_LIMIT = 100.0; // Límite de sobregiro para Silver
 
-    public function isGrantOverdraftFunds(float $found) : bool
+    /**
+     * Determina si se puede conceder sobregiro para una cantidad dada
+     */
+    public function isGrantOverdraftFunds(float $amount) : bool
     {
-        
-        if ($found < -100) {
-            
-            return false; 
+        $limit = $this->getOverdraftFundsAmount();
+
+        // Si la cantidad negativa supera el límite, no se concede
+        if ($amount < -$limit) {
+            return false;
         }
-        return $found <= self::OVERDRAFT_LIMIT;
+
+        // Se concede si la cantidad es menor o igual al límite
+        return $amount <= $limit;
     }
 
-    //usar getOverdraftFundsAmount() quitar el -100.
-
+    /**
+     * Devuelve el límite de fondos de sobregiro permitido
+     */
     public function getOverdraftFundsAmount() : float
     {
-        
         return self::OVERDRAFT_LIMIT;
     }
 }

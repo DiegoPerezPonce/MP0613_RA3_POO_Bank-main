@@ -1,4 +1,5 @@
-<?php namespace ComBank\Bank\Contracts;
+<?php
+namespace ComBank\Bank\Contracts;
 
 use ComBank\Exceptions\BankAccountException;
 use ComBank\Exceptions\FailedTransactionException;
@@ -10,12 +11,12 @@ interface BankAccountInterface
     const STATUS_OPEN = 'OPEN';
     const STATUS_CLOSED = 'CLOSED';
 
-    public function transaction(BankTransactionInterface $bankTransaction) : void;
-    public function isOpen() : bool;
-    public function reopenAccount() : void;
-    public function closeAccount() : void;
-    public function getBalance() : float;
-    public function getOverdraft() : OverdraftInterface;
-    public function applyOverdraft(OverdraftInterface $overdraft) : void;
-    public function setBalance(float $balance) : void;
+    public function transaction(BankTransactionInterface $bankTransaction): void;
+    public function isOpen(): bool;
+    public function reopenAccount(): void;
+    public function closeAccount(): void;
+    public function getBalance(): float;
+    public function getOverdraft(): ?OverdraftInterface; // 👈 corregido
+    public function applyOverdraft(OverdraftInterface $overdraft): void;
+    public function setBalance(float $balance): void;
 }

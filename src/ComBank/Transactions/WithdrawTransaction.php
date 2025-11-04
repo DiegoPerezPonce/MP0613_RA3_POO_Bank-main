@@ -1,60 +1,81 @@
-<?php namespace ComBank\Transactions;
+<?php
+namespace ComBank\Transactions;
 
 use ComBank\Bank\Contracts\BankAccountInterface;
-use ComBank\Exceptions\InvalidOverdraftFundsException;
-use ComBank\Exceptions\InsufficientFundsException; 
-use ComBank\Exceptions\InvalidArgsException; 
+use ComBank\Exceptions\ZeroAmountException;
 use ComBank\Exceptions\FailedTransactionException;
+use ComBank\Exceptions\InvalidOverdraftFundsException;
 use ComBank\Transactions\Contracts\BankTransactionInterface;
-
 
 class WithdrawTransaction extends BaseTransaction implements BankTransactionInterface
 {
-     
-    public function __construct(float $amount, string $info = "Withdrawal")
+    /**
+     * Constructor
+     * @param float $amount
+     * @param string $info
+     * @throws ZeroAmountException
+     */
+    public function __construct(float $amount, string $info = "Withdraw")
     {
         parent::__construct($amount, $info);
-        
-        if ($this->amount <= 0) {
-            throw new InvalidArgsException("Withdrawal amount must be positive.");
+
+        if ($amount <= 0) {
+            throw new ZeroAmountException("Amount must be positive");
         }
     }
 
-    public function applyTransaction(BankAccountInterface $bank_account): float
+    /**
+     * Aplica la transacción al BankAccount
+     * @param BankAccountInterface $bankAccount
+     * @return float Nuevo balance
+     * @throws InvalidOverdraftFundsException
+     * @throws FailedTransactionException
+     */
+    public function applyTransaction(BankAccountInterface $bankAccount): float
     {
-        $currentBalance = $bank_account->getBalance();
+        $currentBalance = $bankAccount->getBalance();
         $withdrawAmount = $this->getAmount();
-        $newBalance = $currentBalance - $withdrawAmount;
 
-        
-        if ($newBalance < 0) {
-            $overdraftStrategy = $bank_account->getOverdraft();
-            
-            $neededOverdraft = abs($newBalance); 
+        // Si hay suficiente saldo, resta directamente
+        if ($withdrawAmount <= $currentBalance) {
+            $newBalance = $currentBalance - $withdrawAmount;
+        } else {
+            $overdraft = $bankAccount->getOverdraft();
+            $neededOverdraft = $withdrawAmount - $currentBalance;
 
-            if (!$overdraftStrategy->isGrantOverdraftFunds($neededOverdraft)) {
-                
-                throw new FailedTransactionException("Insufficient funds and overdraft not granted for the amount : -" . $neededOverdraft);
+            // Caso 1: No hay sobregiro aplicado
+            if ($overdraft === null) {
+                throw new InvalidOverdraftFundsException("No overdraft strategy applied.");
             }
-            
+
+            // Caso 2: Sobregiro existe pero no concede fondos suficientes
+            if (!$overdraft->isGrantOverdraftFunds($neededOverdraft)) {
+                throw new FailedTransactionException("Overdraft not granted for withdrawal.");
+            }
+
+            // Caso 3: Sobregiro concedido
+            $newBalance = $currentBalance - $withdrawAmount;
         }
 
-        
-        $bank_account->setBalance($newBalance);
-
-        
+        $bankAccount->setBalance($newBalance);
         return $newBalance;
     }
 
+    /**
+     * 
+     * @return string
+     */
     public function getTransactionInfo(): string
     {
-        
-        return "withdraw (-{$this->amount})";
+        return 'WITHDRAW_TRANSACTION';
     }
 
+    /**
+     * Devuelve el monto de la transacción
+     * @return float
+     */
     public function getAmount(): float
     {
-       
         return $this->amount;
     }
 }
